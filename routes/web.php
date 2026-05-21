@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AssetController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,7 +31,7 @@ Route::middleware('auth')->group(function () {
     //     )->name('admin.dashboard');
 
     // });
-    Route::middleware('role:Admin IT')
+    Route::middleware(['auth', 'role:Admin IT'])
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
@@ -39,6 +40,11 @@ Route::middleware('auth')->group(function () {
                 '/dashboard',
                 [DashboardController::class, 'admin']
             )->name('dashboard');
+
+            Route::resource(
+                'assets',
+                AssetController::class
+            );
 
         });
 

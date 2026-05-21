@@ -32,7 +32,7 @@ class UpdateAssetRequest extends FormRequest
                 'string',
                 'max:100',
                 Rule::unique('assets', 'asset_code')
-                ->ignore($assetId)
+                    ->ignore($assetId)
             ],
 
             'name' => [
@@ -58,7 +58,7 @@ class UpdateAssetRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('assets', 'serial_no')
-                ->ignore($assetId)
+                    ->ignore($assetId)
             ],
 
             'purchase_date' => [
