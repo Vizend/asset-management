@@ -24,7 +24,7 @@
     <div class="col-md-6 mb-3">
         <label class="form-label">Asset Code</label>
 
-        <input type="text" name="asset_code" class="form-control @error('asset_code') is invalid @enderror"
+        <input type="text" name="asset_code" class="form-control @error('asset_code') is-invalid @enderror"
             value="{{ old('asset_code', $asset->asset_code ?? '') }}">
 
         @error('asset_code')

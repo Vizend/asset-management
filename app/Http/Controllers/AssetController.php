@@ -153,6 +153,8 @@ class AssetController extends Controller
         //
         $data = $request->validated();
 
+        $oldAssetCode = $asset->asset_code;
+
         /*
         |--------------------------------------------------------------------------
         | Replace Image
@@ -177,6 +179,49 @@ class AssetController extends Controller
         }
 
         $asset->update($data);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Regenerate QR
+    |--------------------------------------------------------------------------
+    */
+
+        if (
+            $oldAssetCode !==
+            $asset->asset_code
+        ) {
+
+            if (
+                $asset->qr_code &&
+                Storage::disk('public')
+                    ->exists($asset->qr_code)
+            ) {
+
+                Storage::disk('public')
+                    ->delete($asset->qr_code);
+            }
+
+            $qrPath =
+                'qrcodes/' .
+                $asset->asset_code .
+                '.png';
+
+            Storage::disk('public')->put(
+                $qrPath,
+                QrCode::format('png')
+                    ->size(300)
+                    ->generate(
+                        route(
+                            'admin.assets.show',
+                            $asset
+                        )
+                    )
+            );
+
+            $asset->update([
+                'qr_code' => $qrPath
+            ]);
+        }
 
         return redirect()
             ->route('admin.assets.index')
